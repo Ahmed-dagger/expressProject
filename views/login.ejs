@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<!-- From Uiverse.io by ammarsaa -->
+<form class="form" method="post" action="/login">
+    <p class="title">Login</p>
+    <p class="message">Login now and get full access to our app.</p>
+
+    <!-- Display error message -->
+    <% if (error) { %>
+        <div class="error-message" style="color: red; text-align: center;">
+            <%= error %> <!-- Render the error message -->
+        </div>
+    <% } %>
+
+    <label>
+        <input class="input" type="email" name="email" placeholder="" required>
+        <span>Email</span>
+    </label>
+
+    <label>
+        <input class="input" type="password" name="password" placeholder="" required>
+        <span>Password</span>
+    </label>
+
+    <button class="submit">Submit</button>
+    <p class="signin">Don't have an account? <a href="/signup">Sign Up</a></p>
+</form>
+
+<%- include('partials/footer') %>
