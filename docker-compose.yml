@@ -1,0 +1,28 @@
+# version: '3.8'
+# services:
+#   mongo-container:
+#     #image: mongo:latest
+#     image: arm64v8/mongo # use this for apple silicon
+#     environment:
+#         - MONGO_INITDB_ROOT_USERNAME=mongo-admin
+#         - MONGO_INITDB_ROOT_PASSWORD=koko
+#     volumes:
+#     - /Users/abdallahabotaleb/mongodb/data:/data/db
+#     ports:
+#       - "27017:27017"
+#     command: mongod
+#     restart: unless-stopped  
+
+version: '3.8'
+services:
+  mongo-container:
+    image: arm64v8/mongo        # Apple-silicon build
+    environment:
+      - MONGO_INITDB_DATABASE=school   # auto-create “school” DB
+      # ────────────── remove MONGO_INITDB_ROOT_USERNAME/PASSWORD ──────────────
+    volumes:
+      - /Users/abdallahabotaleb/mongodb/data:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod            # runs without auth by default
+    restart: unless-stopped

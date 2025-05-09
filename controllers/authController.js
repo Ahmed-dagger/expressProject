@@ -100,6 +100,20 @@ exports.logout = (req, res) => {
 };
 
 // Show the home page (protected)
-exports.showHome = (req, res) => {
-    res.render('home');
+exports.showHome = async (req, res, next) => {
+    try {
+        // 1. Load the current user from the database
+        const user = await User.findById(req.session.userId).lean();
+        if (!user) {
+          return res.redirect('/login');
+        }
+    
+        // 2. Render the view *with* balance and any other data
+        res.render('home', {
+          balance:      user.balance.toFixed(2),
+          investments:  user.investments || []
+        });
+      } catch (err) {
+        next(err);
+      }
 };

@@ -1,8 +1,318 @@
 <%- include('partials/header') %>
 
+<style>
+body {
+  background: #020024;
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 0;
+  min-height: 100vh;
+}
+.card {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 800px;
+  width: 100%;
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.card h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #00bfff;
+  margin-bottom: 20px;
+  position: relative;
+}
+.card h2::before,
+.card h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #00bfff;
+}
+.card h2::after {
+  animation: pulse 1s linear infinite;
+}
+.form-section {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+.form {
+  background-color: #333;
+  border-radius: 15px;
+  padding: 20px;
+  flex: 1;
+  min-width: 280px;
+}
+.form h4 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #00bfff;
+}
+.form label {
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+}
+.form .input {
+  background-color: #1a1a1a;
+  border: 1px solid #555;
+  border-radius: 10px;
+  width: 100%;
+  padding: 15px 10px;
+  color: #fff;
+}
+.form .input + span {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.9em;
+  color: rgba(255,255,255,0.5);
+  pointer-events: none;
+  transition: all 0.3s;
+}
+.form .input:focus + span,
+.form .input:valid + span {
+  top: -8px;
+  font-size: 0.7em;
+  color: #00bfff;
+}
+.submit {
+  background-color: #00bfff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  width: 100%;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.submit:hover {
+  background-color: #00bfff96;
+}
+.investment-list li {
+  background-color: #333;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.investment-list .badge {
+  background-color: #00bfff;
+  color: #1a1a1a;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;            /* << very high */
+}
+.custom-modal {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 15px;
+  padding: 20px;
+  width: 90%; max-width: 400px;
+  z-index: 9999;            /* << very high */
 
-        <!-- From Uiverse.io by ammarsaa -->
-      <h2 class="text-light">HOME</h2>
+}
+.custom-modal header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.custom-modal header h3 {
+  color: #00bfff;
+  margin: 0;
+}
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.custom-modal .form-area label {
+  margin-bottom: 15px;
+}
+.custom-modal .form-area .input {
+  margin-top: 5px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.actions .submit {
+  flex: 1;
+}
+@keyframes pulse {
+  from { transform: scale(0.9); opacity:1; }
+  to   { transform: scale(1.8); opacity:0; }
+}
+</style>
 
+<div class="container">
+  <div class="card">
+    <h2>💼 Dashboard</h2>
+    <p><strong>Balance:</strong> $<%= balance %></p>
+
+    <div class="form-section">
+      <div class="form">
+        <h4>➕ Deposit Funds</h4>
+        <form action="/home/deposit" method="POST">
+          <label>
+            <input name="amount" type="number" step="0.01" required class="input" />
+            <span>Amount</span>
+          </label>
+          <button type="submit" class="submit">Deposit</button>
+        </form>
+      </div>
+      <div class="form">
+        <h4>📈 New Investment</h4>
+        <form action="/home/invest" method="POST">
+          <label>
+            <input name="amount" type="number" step="0.01" required class="input" />
+            <span>Investment Amount</span>
+          </label>
+          <label>
+            <input name="roiRate" type="number" step="0.1" required class="input" />
+            <span>ROI % Rate</span>
+          </label>
+          <button type="submit" class="submit">Invest</button>
+        </form>
+      </div>
+    </div>
+
+    <h4>📄 Your Investments</h4>
+    <% if (investments.length === 0) { %>
+      <p>No investments yet.</p>
+    <% } else { %>
+      <ul class="investment-list">
+        <% investments.forEach((inv, idx) => { %>
+          <li>
+            <div>
+              <p>Amount: $<%= inv.amount.toFixed(2) %></p>
+              <p>ROI Rate: <%= inv.roiRate %>%</p>
+              <p>Created: <%= inv.createdAt.toLocaleDateString() %></p>
+            </div>
+            <div style="display: flex; flex-direction: row; gap: 2rem; justify-content: center;">
+              <span style="text-align: right; height: 50%;" class="badge"><%= inv.status.charAt(0).toUpperCase()+inv.status.slice(1) %></span>
+              <% if (inv.status === 'open') { %>
+                <button type="button" class="submit" onclick="openModal(<%= idx %>)">Details</button>
+              <% } %>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</div>
+
+<div id="modal-backdrop" class="modal-backdrop">
+  <div class="custom-modal" id="modal-details">
+    <header>
+      <h3>Investment Details</h3>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </header>
+    <div class="form-area">
+      <form id="editForm" method="POST">
+        <label>
+          Amount
+          <input name="amount" type="number" step="0.01" class="input" id="modal-amount" required />
+        </label>
+        <label>
+          ROI % Rate
+          <input name="roiRate" type="number" step="0.1" class="input" id="modal-roi" required />
+        </label>
+        <div class="actions">
+          <button type="submit" class="submit">Update</button>
+        </div>
+      </form>
+      <div class="roi-calculator" style="margin-top: 20px;">
+        <label for="roi-date">Calculate ROI as of:</label>
+        <input type="date" id="roi-date" class="input" />
+        <button type="button" class="submit" onclick="computeROI()">Compute</button>
+        <p id="roi-result" style="margin-top: 10px; color: #00bfff;"></p>
+      </div>
+      <form id="closeForm" method="POST">
+        <div class="actions">
+          <button type="submit" class="submit">Close Investment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { calculateROI } from '/js/investmentUtils.js';
+
+  // Parse investments data passed from server
+  const investments = <%- JSON.stringify(investments || []) %>;
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalAmount = document.getElementById('modal-amount');
+  const modalROI = document.getElementById('modal-roi');
+  const editForm = document.getElementById('editForm');
+  const closeForm = document.getElementById('closeForm');
+  const roiDateInput = document.getElementById('roi-date');
+  const roiResultP = document.getElementById('roi-result');
+  let currentInv = null;
+
+  // Expose functions globally
+  window.openModal = function(index) {
+    currentInv = investments[index];
+    modalAmount.value = currentInv.amount;
+    modalROI.value = currentInv.roiRate;
+    editForm.action = `/home/investments/${currentInv._id}/update`;
+    closeForm.action = `/home/investments/${currentInv._id}/close`;
+    modalBackdrop.style.display = 'flex';
+  };
+
+  window.closeModal = function() {
+    modalBackdrop.style.display = 'none';
+    roiResultP.textContent = '';
+  };
+
+  window.computeROI = function() {
+    const dateStr = roiDateInput.value;
+    if (!dateStr) {
+      roiResultP.textContent = 'Please pick a date.';
+      return;
+    }
+    const selectedDate = new Date(dateStr);
+    const createdAt = new Date(currentInv.createdAt);
+    if (selectedDate < createdAt) {
+      roiResultP.textContent = 'Selected date is before investment creation.';
+      return;
+    }
+    const principal = currentInv.amount;
+    const annualRate = currentInv.roiRate / 100;
+    const interest = calculateROI(principal, annualRate, createdAt, selectedDate);
+    roiResultP.textContent = `Accrued ROI: $${interest.gain.toFixed(2)}`;
+  };
+</script>
 
 <%- include('partials/footer') %>
