@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "test": "SET \"NODE_EN=testing\" && jest --detectOpenHandles --testTimeout=150000 --coverage",
+    "start": "node server.js",
     "dev": "nodemon app.js"
   },
   "keywords": [],
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.0"
   }
