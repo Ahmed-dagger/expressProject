@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const investmentSchema = new mongoose.Schema({
+  amount:    { type: Number, required: true },
+  roiRate:   { type: Number, required: true }, //5 => 5%        
+  createdAt: { type: Date,   default: Date.now },
+  status:    { type: String, enum: ['open','closed'], default: 'open' }
+});
+
 const userSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -21,7 +28,12 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  }, 
+  balance: {
+     type: Number, default: 0 
+    },
+    investments: 
+    [investmentSchema]
 }, { timestamps: true }); // Adds createdAt and updatedAt
 
 // Ensure it's properly exported
