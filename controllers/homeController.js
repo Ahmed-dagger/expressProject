@@ -2,16 +2,13 @@ const User = require('../models/User');
 
 // GET /home
 exports.getHome = async (req, res, next) => {
-  try {
+  
     const user = await User.findById(req.session.userId).lean();
     if (!user) return res.redirect('/login');
     res.render('home', {
       balance:      user.balance.toFixed(2),
       investments: user.investments
     });
-  } catch (err) {
-    next(err);
-  }
 };
 
 // POST /home/deposit
@@ -43,7 +40,7 @@ exports.postInvest = async (req, res, next) => {
 
 // POST /home/investments/:id/update
 exports.updateInvestment = async (req, res, next) => {
-  try {
+  
     const { amount, roiRate } = req.body;
     const invId = req.params.id;
 
@@ -58,14 +55,10 @@ exports.updateInvestment = async (req, res, next) => {
     await user.save();
 
     res.redirect('/home');
-  } catch (err) {
-    next(err);
-  }
 };
 
 // POST /home/investments/:id/close
 exports.closeInvestment = async (req, res, next) => {
-  try {
     const invId = req.params.id;
     const user  = await User.findById(req.session.userId);
     const inv   = user.investments.id(invId);
@@ -91,8 +84,6 @@ exports.closeInvestment = async (req, res, next) => {
     await user.save();
 
     res.redirect('/home');
-  } catch (err) {
-    next(err);
-  }
+
 };
 

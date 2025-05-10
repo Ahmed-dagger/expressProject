@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest --coverage",
     "test:e2e": "jest --config=jest.e2e.config.js --testTimeout=70000"
+    "test": "SET \"NODE_EN=testing\" && jest --detectOpenHandles --testTimeout=150000 --coverage",
   },
   "keywords": [],
   "author": "",
@@ -30,6 +30,7 @@
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-puppeteer": "^11.0.0",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
     "puppeteer": "^24.8.2",
     "supertest": "^7.1.0"

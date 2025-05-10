@@ -3,9 +3,6 @@ const User = require('../models/User');
 
 // Show the signup page
 exports.showSignup = (req, res) => {
-    if (req.session.userId) {
-        return res.redirect('/home');
-    }
     res.render('signup', { error: null });
 };
 
@@ -29,7 +26,7 @@ exports.signup = async (req, res) => {
         return res.render('signup', { error: 'Password must be at least 8 characters long and contain both letters and numbers' });
     }
 
-    try {
+    
         // Check if the email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -50,25 +47,18 @@ exports.signup = async (req, res) => {
 
         // Redirect to home page after successful signup
         res.redirect('/home');
-    } catch (err) {
-        console.error(err);
-        res.render('signup', { error: 'Something went wrong. Please try again later.' });
-    }
 };
 
 // Show the login page
 exports.showLogin = (req, res) => {
-    if (req.session.userId) {
-        return res.redirect('/home');
-    }
     res.render('login', { error: null });
 };
 
 // Handle the login process
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-  
-    try {
+
+    
         // Find the user by email
         const user = await User.findOne({ email });
         if (!user) {
@@ -86,10 +76,6 @@ exports.login = async (req, res) => {
 
         // Redirect to the home page
         res.redirect('/home');
-    } catch (err) {
-        console.error(err);
-        res.render('login', { error: 'Server error. Please try again.' });
-    }
 };
 
 // Handle the logout process
@@ -101,19 +87,15 @@ exports.logout = (req, res) => {
 
 // Show the home page (protected)
 exports.showHome = async (req, res, next) => {
-    try {
         // 1. Load the current user from the database
         const user = await User.findById(req.session.userId).lean();
         if (!user) {
-          return res.redirect('/login');
+            return res.redirect('/login');
         }
-    
+
         // 2. Render the view *with* balance and any other data
         res.render('home', {
-          balance:      user.balance.toFixed(2),
-          investments:  user.investments || []
+            balance: (user.balance ?? 0).toFixed(2),
+            investments: user.investments || []
         });
-      } catch (err) {
-        next(err);
-      }
 };
