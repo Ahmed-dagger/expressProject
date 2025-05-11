@@ -268,7 +268,7 @@ body {
 </div>
 
 <script type="module">
-  import { calculateROI } from '/js/investmentUtils.js';
+  import { calculateROI, getROIStatement } from '/js/investmentUtils.js';
 
   // Parse investments data passed from server
   const investments = <%- JSON.stringify(investments || []) %>;
@@ -311,7 +311,8 @@ body {
     const principal = currentInv.amount;
     const annualRate = currentInv.roiRate / 100;
     const interest = calculateROI(principal, annualRate, createdAt, selectedDate);
-    roiResultP.textContent = `Accrued ROI: $${interest.gain.toFixed(2)}`;
+    // roiResultP.textContent = `Accrued ROI: $${interest.gain.toFixed(2)}`;
+    roiResultP.textContent = getROIStatement(interest);
   };
 </script>
 

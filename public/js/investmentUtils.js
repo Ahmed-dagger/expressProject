@@ -14,3 +14,7 @@ export function calculateROI(principal, annualRateDecimal, startDate, endDate) {
     gain: calculateGain(principal, annualRateDecimal, d)
   };
 }
+
+export function getROIStatement(interest) {
+  return `Accrued ROI: $${interest.gain.toFixed(2)}`
+}
